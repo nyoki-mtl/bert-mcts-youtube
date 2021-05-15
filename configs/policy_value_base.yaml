@@ -1,0 +1,27 @@
+model_type: 'PolicyValue'
+
+seed: 42
+dataset_dir: './data/dataset/selfplay'
+model_dir: './work_dirs/mlm_base/version_0/checkpoints'
+
+train_loader:
+  batch_size: 128
+  shuffle: True
+  num_workers: 0
+  pin_memory: True
+  drop_last: True
+
+val_loader:
+  batch_size: 128
+  shuffle: False
+  num_workers: 0
+  pin_memory: True
+  drop_last: False
+
+train_params:
+  max_epochs: 1
+  # validationおよびcheckpointの間隔step数
+  val_check_interval: 30000
+  limit_val_batches: 0.1
+  # 環境に応じて，適宜変更
+  gpus: [0]

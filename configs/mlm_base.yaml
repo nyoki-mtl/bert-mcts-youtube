@@ -1,0 +1,26 @@
+model_type: 'MLM'
+
+seed: 42
+dataset_dir: './data/dataset/gokaku_100'
+model_dir:
+
+train_loader:
+  batch_size: 64
+  shuffle: True
+  num_workers: 8
+  pin_memory: False
+  drop_last: True
+
+val_loader:
+  batch_size: 64
+  shuffle: False
+  num_workers: 8
+  pin_memory: False
+  drop_last: False
+
+train_params:
+  max_epochs: 5
+  # validationおよびcheckpointの間隔step数
+  val_check_interval: 3000
+  # 環境に応じて，適宜変更
+  gpus: [0]
