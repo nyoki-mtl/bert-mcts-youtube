@@ -1,7 +1,7 @@
 import cshogi
 
 from src.utils.shogi import reverse_piece_fn
-
+from src.model.bert import CLS_ID, SEP_ID
 max_pieces_in_hand_length = 15
 
 # 0: HPAWN 歩 -> 1
@@ -16,14 +16,15 @@ pieces_in_hand_to_pieces = { 0: 1, 1: 2, 2: 3, 3: 4, 4: 7, 5: 5, 6: 6 }
 def get_seq_from_board(board):
     bp, wp = board.pieces_in_hand
     if board.turn == cshogi.BLACK:
-        seq = board.pieces \
-            + convert_pieces_in_hand(bp, cshogi.BLACK) \
+        seq = [CLS_ID] + board.pieces + [SEP_ID] \
+            + convert_pieces_in_hand(bp, cshogi.BLACK) + [SEP_ID] \
             + convert_pieces_in_hand(wp, cshogi.WHITE)
     else:
         # 駒の順番を逆にして、駒を先後反転させる。持ち駒は逆にする。
-        seq = reverse_piece_fn(board.pieces[::-1]).tolist() \
-            + convert_pieces_in_hand(wp, cshogi.BLACK) \
+        seq = [CLS_ID] + reverse_piece_fn(board.pieces[::-1]).tolist() + [SEP_ID] \
+            + convert_pieces_in_hand(wp, cshogi.BLACK) + [SEP_ID] \
             + convert_pieces_in_hand(bp, cshogi.WHITE)
+
     return seq
 
 def convert_pieces_in_hand(pieces_in_hand, turn):

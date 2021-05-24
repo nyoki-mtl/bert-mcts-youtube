@@ -3,8 +3,12 @@ from transformers import BertConfig, BertForMaskedLM, BertModel
 
 from src.utils.shogi import pieces_list
 
+CLS_ID = 29
+SEP_ID = 30
+MASK_ID = 32
+
 config = {
-    'vocab_size': len(pieces_list) + 4,  # MASK_TOKEN_ID, MASK, CLS, SEP
+    'vocab_size': len(pieces_list) + 4,  # CLS, SEP, XXX, MASK
     'hidden_size': 768,
     'num_hidden_layers': 12,
     'num_attention_heads': 12,
@@ -39,16 +43,10 @@ class BertPolicyValue(nn.Module):
         else:
             self.bert = BertModel.from_pretrained(model_dir)
 
-        self.policy_head = nn.Sequential(
-            nn.Linear(768, 768 * 2),
-            nn.Tanh(),
-            nn.Linear(768 * 2, 9 * 9 * 27)
-        )
+        self.policy_head = nn.Linear(768,  9 * 9 * 27)
 
         self.value_head = nn.Sequential(
-            nn.Linear(768, 768 * 2),
-            nn.Tanh(),
-            nn.Linear(768 * 2, 1),
+            nn.Linear(768, 1),
             nn.Sigmoid()
         )
 
@@ -56,9 +54,9 @@ class BertPolicyValue(nn.Module):
         self.loss_value_fn = nn.MSELoss()
 
     def forward(self, input_ids, labels=None):
-        features = self.bert(input_ids=input_ids)['last_hidden_state']
-        policy = self.policy_head(features).mean(axis=1)
-        value = self.value_head(features).mean(axis=1).squeeze(1)
+        features = self.bert(input_ids=input_ids)['pooler_output']
+        policy = self.policy_head(features)
+        value = self.value_head(features)
         if labels is None:
             return {'policy': policy, 'value': value}
         else:
