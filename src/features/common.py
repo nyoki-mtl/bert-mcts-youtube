@@ -39,6 +39,6 @@ def convert_pieces_in_hand(pieces_in_hand, turn):
         return pieces + [0] * (max_pieces_in_hand_length - len(pieces))
     elif len(pieces) == max_pieces_in_hand_length:
         return pieces
-    # trancate
+    # truncate
     else:
         return pieces[:max_pieces_in_hand_length]
