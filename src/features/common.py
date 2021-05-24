@@ -2,8 +2,7 @@ import cshogi
 
 from src.utils.shogi import reverse_piece_fn
 
-# 40 - 2 (王将) 
-max_pieces_in_hand_length = 38
+max_pieces_in_hand_length = 15
 
 # 0: HPAWN 歩 -> 1
 # 1: HLANCE 香 -> 2
@@ -35,5 +34,11 @@ def convert_pieces_in_hand(pieces_in_hand, turn):
             for j in range(num):
                 pieces.append(pieces_in_hand_to_pieces[i] + offset)
 
-    return pieces + [0] * (max_pieces_in_hand_length - len(pieces))
-
+    # padding
+    if len(pieces) < max_pieces_in_hand_length:
+        return pieces + [0] * (max_pieces_in_hand_length - len(pieces))
+    elif len(pieces) == max_pieces_in_hand_length:
+        return pieces
+    # trancate
+    else:
+        return pieces[:max_pieces_in_hand_length]
