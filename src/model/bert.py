@@ -56,7 +56,7 @@ class BertPolicyValue(nn.Module):
     def forward(self, input_ids, labels=None):
         features = self.bert(input_ids=input_ids)['pooler_output']
         policy = self.policy_head(features)
-        value = self.value_head(features)
+        value = self.value_head(features).squeeze(1)
         if labels is None:
             return {'policy': policy, 'value': value}
         else:
